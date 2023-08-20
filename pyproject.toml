@@ -9,6 +9,7 @@ packages = [{include = "weaviate_poc"}]
 [tool.poetry.dependencies]
 python = "^3.10"
 weaviate-client = "^3.22.1"
+python-dotenv = "^1.0.0"
 
 
 [build-system]
