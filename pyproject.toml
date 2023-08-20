@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "weaviate-poc"
+version = "0.1.0"
+description = ""
+authors = ["tfutada <tafutada@gmail.com>"]
+readme = "README.md"
+packages = [{include = "weaviate_poc"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+weaviate-client = "^3.22.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
