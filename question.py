@@ -78,8 +78,6 @@ response1 = (
     .do()
 )
 
-
-
 # response2 = (
 #     client.query
 #     .get("Question", ["question", "answer", "category"])
@@ -111,28 +109,6 @@ response1 = (
 #     .do()
 # )
 
-
-# response = (
-#     client.query
-#     .get("JeopardyQuestion", ["question", "answer"])
-#     .with_near_text({
-#         "concepts": ["animals in movies"]
-#     })
-#     .with_limit(2)
-#     .with_additional(["distance"])
-#     .do()
-# )
-
-# response = (
-#     client.query
-#     .get("JeopardyQuestion", ["question", "answer"])
-#     .with_near_object({
-#         "id": "56b9449e-65db-5df4-887b-0a4773f52aa7"
-#     })
-#     .with_limit(2)
-#     .with_additional(["distance"])
-#     .do()
-# )
 
 print(json.dumps(response1, indent=2))
 
