@@ -29,7 +29,8 @@ print(ret)
 
 class_obj = {
     "class": "Question",
-    "vectorizer": "text2vec-openai",  # If set to "none" you must always provide vectors yourself. Could be any other "text2vec-*" also.
+    "vectorizer": "text2vec-openai",
+    # If set to "none" you must always provide vectors yourself. Could be any other "text2vec-*" also.
     "moduleConfig": {
         "text2vec-openai": {},
         "generative-openai": {}  # Ensure the `generative-openai` module is used for generative queries
@@ -55,13 +56,29 @@ class_obj = {
 #             class_name="Question"
 #         )
 
+#
+# === Querying ===
+#
+
 # response1 = (
 #     client.query
 #     .get("Question", ["question", "answer", "category"])
+#     .with_additional("id")
 #     .with_near_text({"concepts": ["DNA and RNA"]})
 #     .with_limit(2)
 #     .do()
 # )
+
+response1 = (
+    client.query
+    .get("Question", ["question", "answer", "category"])
+    .with_additional("id")
+    .with_near_object({"id": "9b37457f-cc4f-4dff-a2fd-d242a53dd269"})
+    .with_limit(2)
+    .do()
+)
+
+
 
 # response2 = (
 #     client.query
@@ -85,18 +102,39 @@ class_obj = {
 #     .do()
 # )
 
-response = (
-    client.query
-    .get("Question", ["question", "answer", "category"])
-    .with_near_text({"concepts": ["biology"]})
-    .with_generate(grouped_task="Write a tweet with emojis about these facts.")
-    .with_limit(2)
-    .do()
-)
+# response = (
+#     client.query
+#     .get("Question", ["question", "answer", "category"])
+#     .with_near_text({"concepts": ["biology"]})
+#     .with_generate(grouped_task="Write a tweet with emojis about these facts.")
+#     .with_limit(2)
+#     .do()
+# )
 
-print(response["data"]["Get"]["Question"][0]["_additional"]["generate"]["groupedResult"])
-print(json.dumps(response, indent=4))
 
+# response = (
+#     client.query
+#     .get("JeopardyQuestion", ["question", "answer"])
+#     .with_near_text({
+#         "concepts": ["animals in movies"]
+#     })
+#     .with_limit(2)
+#     .with_additional(["distance"])
+#     .do()
+# )
+
+# response = (
+#     client.query
+#     .get("JeopardyQuestion", ["question", "answer"])
+#     .with_near_object({
+#         "id": "56b9449e-65db-5df4-887b-0a4773f52aa7"
+#     })
+#     .with_limit(2)
+#     .with_additional(["distance"])
+#     .do()
+# )
+
+print(json.dumps(response1, indent=2))
 
 
 if __name__ == '__main__':
