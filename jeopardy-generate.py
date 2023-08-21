@@ -27,90 +27,79 @@ client = weaviate.Client(
 ret = client.schema.get()
 print(ret)
 
+class_name = "JeopardyQuestion"
+
 class_obj = {
-    "class": "Question",
+    "class": class_name,
     "vectorizer": "text2vec-openai",
     # If set to "none" you must always provide vectors yourself. Could be any other "text2vec-*" also.
     "moduleConfig": {
         "text2vec-openai": {},
-        "generative-openai": {}  # Ensure the `generative-openai` module is used for generative queries
+        "generative-openai": {
+            "model": "gpt-3.5-turbo"
+        }  # Ensure the `generative-openai` module is used for generative queries
     }
 }
 
 # client.schema.create_class(class_obj)
 
+jeopardy_url = 'https://raw.githubusercontent.com/databyjp/wv_demo_uploader/main/weaviate_datasets/data/jeopardy_1k.json'
 
-# resp = requests.get('https://raw.githubusercontent.com/weaviate-tutorials/quickstart/main/data/jeopardy_tiny.json')
+# resp = requests.get(jeopardy_url)
 # data = json.loads(resp.text)  # Load data
-
+#
 # with client.batch() as batch:  # Initialize a batch process
 #     for i, d in enumerate(data):  # Batch import data
 #         print(f"importing question: {i+1}")
 #         properties = {
 #             "answer": d["Answer"],
 #             "question": d["Question"],
-#             "category": d["Category"],
 #         }
 #         batch.add_data_object(
 #             data_object=properties,
-#             class_name="Question"
+#             class_name="JeopardyQuestion"
 #         )
 
 #
 # === Querying ===
 #
 
-response1 = (
-    client.query
-    .get("Question", ["question", "answer", "category"])
-    .with_additional("id")
-    .with_near_text({"concepts": ["DNA and RNA"]})
-    .with_limit(2)
-    .do()
-)
-
 # response1 = (
 #     client.query
-#     .get("Question", ["question", "answer", "category"])
-#     .with_additional("id")
-#     .with_near_object({"id": "9b37457f-cc4f-4dff-a2fd-d242a53dd269"})
-#     .with_limit(2)
-#     .do()
-# )
-
-# response2 = (
-#     client.query
-#     .get("Question", ["question", "answer", "category"])
-#     .with_near_text({"concepts": ["biology"]})
-#     .with_where({
-#         "path": ["category"],
-#         "operator": "Equal",
-#         "valueText": "ANIMALS"
+#     .get("JeopardyQuestion", ["question", "answer"])
+#     .with_additional("vector")
+#     .with_near_text({
+#         "concepts": ["animals in movies commented by US presidents"]
 #     })
 #     .with_limit(2)
+#     .with_additional(["distance"])
 #     .do()
 # )
 
 # response = (
 #     client.query
-#     .get("Question", ["question", "answer", "category"])
-#     .with_near_text({"concepts": ["biology"]})
-#     .with_generate(single_prompt="{answer}. continue...  ")
+#     .get("JeopardyQuestion", ["question", "answer"])
+#     .with_near_object({
+#         "id": "56b9449e-65db-5df4-887b-0a4773f52aa7"
+#     })
 #     .with_limit(2)
+#     .with_additional(["distance"])
 #     .do()
 # )
 
-# response = (
-#     client.query
-#     .get("Question", ["question", "answer", "category"])
-#     .with_near_text({"concepts": ["biology"]})
-#     .with_generate(grouped_task="Write a tweet with emojis about these facts.")
-#     .with_limit(2)
-#     .do()
-# )
+generate_prompt = "Convert the following into a question for twitter. Include emojis for fun, but do not include the answer: {question}."
 
+response = (
+  client.query
+  .get("JeopardyQuestion", ["question"])
+  .with_generate(single_prompt=generate_prompt)
+  .with_near_text({
+    "concepts": ["World history"]
+  })
+  .with_limit(2)
+).do()
 
-print(json.dumps(response1, indent=2))
+print(json.dumps(response, indent=2))
 
 
 if __name__ == '__main__':

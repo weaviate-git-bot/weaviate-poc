@@ -64,43 +64,22 @@ jeopardy_url = 'https://raw.githubusercontent.com/databyjp/wv_demo_uploader/main
 # === Querying ===
 #
 
-# response1 = (
-#     client.query
-#     .get("JeopardyQuestion", ["question", "answer"])
-#     .with_additional("vector")
-#     .with_near_text({
-#         "concepts": ["animals in movies commented by US presidents"]
-#     })
-#     .with_limit(2)
-#     .with_additional(["distance"])
-#     .do()
-# )
+response1 = (
+    client.query
+    .get("JeopardyQuestion", ["question", "answer"])
+    # .with_additional("vector")
+    .with_additional("id")
+    .with_near_text({
+        "concepts": ["sports, baseball and basketball"],
+        "distance": 0.5
+    })
+    .with_autocut(2)
+    .with_limit(10)
+    .with_additional(["distance"])
+    .do()
+)
 
-# response = (
-#     client.query
-#     .get("JeopardyQuestion", ["question", "answer"])
-#     .with_near_object({
-#         "id": "56b9449e-65db-5df4-887b-0a4773f52aa7"
-#     })
-#     .with_limit(2)
-#     .with_additional(["distance"])
-#     .do()
-# )
-
-generate_prompt = "Convert the following into a question for twitter. Include emojis for fun, but do not include the answer: {question}."
-
-response = (
-  client.query
-  .get("JeopardyQuestion", ["question"])
-  .with_generate(single_prompt=generate_prompt)
-  .with_near_text({
-    "concepts": ["World history"]
-  })
-  .with_limit(2)
-).do()
-
-print(json.dumps(response, indent=2))
-
+print(json.dumps(response1, indent=2))
 
 if __name__ == '__main__':
     pass
